@@ -10,6 +10,10 @@ Windows Named Pipes server and client module for Deno.
 Requires `allow-ffi`, `unstable-ffi`
 [permission](https://docs.deno.com/runtime/manual/basics/permissions).
 
+# Requirements
+
+[Deno](https://deno.com) v1.42 or later.
+
 # License
 
 This library is licensed under the MIT License. See the [LICENSE](./LICENSE)

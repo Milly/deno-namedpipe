@@ -6,7 +6,7 @@
  * Can be used in the same way as {@linkcode https://deno.land/api?s=Deno.connect | Deno.connect}.
  *
  * ```typescript
- * import { connect } from "jsr:@milly/namedpipe";
+ * import { connect } from "@milly/namedpipe";
  *
  * const conn = await connect({ path: "\\\\.\\pipe\\your-own-name" });
  *
@@ -57,7 +57,7 @@ export type NamedPipeConnectOptions = {
  * Can be used in the same way as {@linkcode https://deno.land/api?s=Deno.connect | Deno.connect}.
  *
  * ```ts
- * import { connect } from "jsr:@milly/namedpipe";
+ * import { connect } from "@milly/namedpipe";
  *
  * const conn = await connect({ path: "\\\\.\\pipe\\name" });
  * ```

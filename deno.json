@@ -27,13 +27,13 @@
   },
   "imports": {
     "@lambdalisue/async": "jsr:@lambdalisue/async@^2.1.1",
+    "@milly/namedpipe": "./mod.ts",
     "@milly/streams": "jsr:@milly/streams@^0.0.0",
     "@nick/dispose": "jsr:@nick/dispose@^1.1.0",
     "@std/assert": "jsr:@std/assert@0.226.0",
     "@std/async": "jsr:@std/async@0.224.1",
     "@std/streams": "jsr:@std/streams@0.224.3",
-    "@std/testing": "jsr:@std/testing@0.225.0",
-    "jsr:@milly/namedpipe": "./mod.ts"
+    "@std/testing": "jsr:@std/testing@0.225.0"
   },
   "fmt": {
     "exclude": ["README.md"]

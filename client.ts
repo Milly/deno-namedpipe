@@ -81,7 +81,9 @@ export async function connect(
     null,
   );
   assertResult(
-    Deno.UnsafePointer.value(hFile) !== C.INVALID_HANDLE_VALUE,
+    !(C.INVALID_HANDLE_VALUE as readonly (number | bigint)[]).includes(
+      Deno.UnsafePointer.value(hFile),
+    ),
     `CreateFile failed: ${path}`,
   );
   return new NamedPipeClientConn(path, hFile);

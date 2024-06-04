@@ -215,7 +215,9 @@ function createNamedPipe(params: Required<NamedPipeListenOptions>) {
     null,
   );
   assertResult(
-    Deno.UnsafePointer.value(handle) !== C.INVALID_HANDLE_VALUE,
+    !(C.INVALID_HANDLE_VALUE as readonly (number | bigint)[]).includes(
+      Deno.UnsafePointer.value(handle),
+    ),
     `CreateNamedPipe failed: ${path}`,
   );
   return handle;

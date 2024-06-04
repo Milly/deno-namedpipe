@@ -1,4 +1,9 @@
-export const INVALID_HANDLE_VALUE = -1n;
+export const INVALID_HANDLE_VALUE = [
+  0xffff_ffff_ffff_ffffn,
+  // NOTE: Prior to Deno 1.44, -1n was returned as the error handle.
+  // See: https://github.com/denoland/deno/pull/23981
+  -1n,
+] as const;
 
 export const ERROR_SUCCESS = 0;
 export const ERROR_BROKEN_PIPE = 109;

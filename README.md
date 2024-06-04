@@ -14,6 +14,46 @@ Requires `allow-ffi`, `unstable-ffi`
 
 [Deno](https://deno.com) v1.42 or later.
 
+# Example
+
+## Server
+
+Can be used in the same way as [`Deno.listen`](https://deno.land/api?s=Deno.listen).
+
+```typescript
+import { listen } from "@milly/namedpipe";
+import { TextLineStream } from "@std/streams/text-line-stream";
+
+const listener = listen({ path: "\\\\.\\pipe\\your-own-name" });
+
+for await (const conn of listener) {
+  console.log("--- new conn ---");
+  conn.readable
+    .pipeThrough(new TextDecoderStream())
+    .pipeThrough(new TextLineStream())
+    .pipeTo(
+      new WritableStream({
+        write: (line) => console.log(line),
+      }),
+    );
+}
+```
+
+## Client
+
+Can be used in the same way as [`Deno.connect`](https://deno.land/api?s=Deno.connect).
+
+```typescript
+import { connect } from "@milly/namedpipe";
+
+const conn = await connect({ path: "\\\\.\\pipe\\your-own-name" });
+
+await ReadableStream
+  .from(["Hello\n", "World\n"])
+  .pipeThrough(new TextEncoderStream())
+  .pipeTo(conn.writable);
+```
+
 # License
 
 This library is licensed under the MIT License. See the [LICENSE](./LICENSE)

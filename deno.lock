@@ -7,15 +7,17 @@
       "jsr:@milly/streams@0.0.0": "jsr:@milly/streams@0.0.0",
       "jsr:@milly/streams@^0.0.0": "jsr:@milly/streams@0.0.0",
       "jsr:@nick/dispose@^1.1.0": "jsr:@nick/dispose@1.1.0",
-      "jsr:@std/assert@0.225.3": "jsr:@std/assert@0.225.3",
+      "jsr:@std/assert@0.226.0": "jsr:@std/assert@0.226.0",
       "jsr:@std/assert@^0.224.0": "jsr:@std/assert@0.224.0",
+      "jsr:@std/assert@^0.226.0": "jsr:@std/assert@0.226.0",
       "jsr:@std/async@0.224.0": "jsr:@std/async@0.224.0",
-      "jsr:@std/async@^0.224.1": "jsr:@std/async@0.224.1",
+      "jsr:@std/async@0.224.1": "jsr:@std/async@0.224.1",
       "jsr:@std/fmt@^0.224.0": "jsr:@std/fmt@0.224.0",
       "jsr:@std/internal@^0.224.0": "jsr:@std/internal@0.224.0",
       "jsr:@std/internal@^1.0.0": "jsr:@std/internal@1.0.0",
       "jsr:@std/streams": "jsr:@std/streams@0.224.1",
-      "jsr:@std/testing@0.224.0": "jsr:@std/testing@0.224.0"
+      "jsr:@std/streams@0.224.3": "jsr:@std/streams@0.224.3",
+      "jsr:@std/testing@0.225.0": "jsr:@std/testing@0.225.0"
     },
     "jsr": {
       "@lambdalisue/async@2.1.1": {
@@ -34,8 +36,8 @@
           "jsr:@std/internal@^0.224.0"
         ]
       },
-      "@std/assert@0.225.3": {
-        "integrity": "b3c2847aecf6955b50644cdb9cf072004ea3d1998dd7579fc0acb99dbb23bd4f",
+      "@std/assert@0.226.0": {
+        "integrity": "0dfb5f7c7723c18cec118e080fec76ce15b4c31154b15ad2bd74822603ef75b3",
         "dependencies": [
           "jsr:@std/internal@^1.0.0"
         ]
@@ -61,10 +63,13 @@
       "@std/streams@0.224.1": {
         "integrity": "e8565a376ae3888f60770cd09e480952ec7c349007aed81b8f7165424ce2195f"
       },
-      "@std/testing@0.224.0": {
-        "integrity": "371b8a929aa7132240d5dd766a439be8f780ef5c176ab194e0bcab72370c761e",
+      "@std/streams@0.224.3": {
+        "integrity": "38755b17defdb8a7f617acb7242ea029ac83a5deeb289b5820a3650cb031e2f6"
+      },
+      "@std/testing@0.225.0": {
+        "integrity": "53ca3c47eb121acabda633fd50699c4b33da6a7ce3e5bb34d7277d15df5f0a6e",
         "dependencies": [
-          "jsr:@std/assert@^0.224.0"
+          "jsr:@std/assert@^0.226.0"
         ]
       }
     }
@@ -75,10 +80,10 @@
       "jsr:@lambdalisue/async@^2.1.1",
       "jsr:@milly/streams@^0.0.0",
       "jsr:@nick/dispose@^1.1.0",
-      "jsr:@std/assert@0.225.3",
-      "jsr:@std/async@^0.224.1",
-      "jsr:@std/streams@0.224.2",
-      "jsr:@std/testing@0.224.0"
+      "jsr:@std/assert@0.226.0",
+      "jsr:@std/async@0.224.1",
+      "jsr:@std/streams@0.224.3",
+      "jsr:@std/testing@0.225.0"
     ]
   }
 }

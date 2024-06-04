@@ -6,8 +6,8 @@
  * Can be used in the same way as {@linkcode https://deno.land/api?s=Deno.listen | Deno.listen}.
  *
  * ```typescript
- * import { listen } from "jsr:@milly/namedpipe";
- * import { TextLineStream } from "jsr:@std/streams/text-line-stream";
+ * import { listen } from "@milly/namedpipe";
+ * import { TextLineStream } from "@std/streams/text-line-stream";
  *
  * const listener = listen({ path: "\\\\.\\pipe\\your-own-name" });
  *
@@ -259,7 +259,7 @@ export type NamedPipeListenOptions = {
  * Can be used in the same way as {@linkcode https://deno.land/api?s=Deno.listen | Deno.listen}.
  *
  * ```ts
- * import { listen } from "jsr:@milly/namedpipe";
+ * import { listen } from "@milly/namedpipe";
  *
  * const listener = listen({ path: "\\\\.\\pipe\\your-own-name" });
  * const conn = await listener.accept();

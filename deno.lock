@@ -5,13 +5,13 @@
       "jsr:@lambdalisue/async@^2.1.1": "jsr:@lambdalisue/async@2.1.1",
       "jsr:@milly/streams@^1.0.0": "jsr:@milly/streams@1.0.0",
       "jsr:@nick/dispose@^1.1.0": "jsr:@nick/dispose@1.1.0",
-      "jsr:@std/assert@^0.226.0": "jsr:@std/assert@0.226.0",
+      "jsr:@std/assert@1.0.0-rc.2": "jsr:@std/assert@1.0.0-rc.2",
       "jsr:@std/assert@^1.0.1": "jsr:@std/assert@1.0.1",
       "jsr:@std/async@^1.0.1": "jsr:@std/async@1.0.1",
       "jsr:@std/internal@^1.0.0": "jsr:@std/internal@1.0.1",
       "jsr:@std/internal@^1.0.1": "jsr:@std/internal@1.0.1",
       "jsr:@std/streams": "jsr:@std/streams@1.0.0",
-      "jsr:@std/testing@0.225.0": "jsr:@std/testing@0.225.0"
+      "jsr:@std/testing@0.225.3": "jsr:@std/testing@0.225.3"
     },
     "jsr": {
       "@lambdalisue/async@2.1.1": {
@@ -23,8 +23,8 @@
       "@nick/dispose@1.1.0": {
         "integrity": "73a15b90cb48e1435801258ba3ac7a19382823349dedcacbb8e5b5b673ce9d17"
       },
-      "@std/assert@0.226.0": {
-        "integrity": "0dfb5f7c7723c18cec118e080fec76ce15b4c31154b15ad2bd74822603ef75b3",
+      "@std/assert@1.0.0-rc.2": {
+        "integrity": "0484eab1d76b55fca1c3beaff485a274e67dd3b9f065edcbe70030dfc0b964d3",
         "dependencies": [
           "jsr:@std/internal@^1.0.0"
         ]
@@ -44,10 +44,10 @@
       "@std/streams@1.0.0": {
         "integrity": "350242b8fad9874ed45f3c42df3d132bd0a958f8a8bae9bbfa1ff039716aa6fb"
       },
-      "@std/testing@0.225.0": {
-        "integrity": "53ca3c47eb121acabda633fd50699c4b33da6a7ce3e5bb34d7277d15df5f0a6e",
+      "@std/testing@0.225.3": {
+        "integrity": "348c24d0479d44ab3dbb4f26170f242e19f24051b45935d4a9e7ca0ab7e37780",
         "dependencies": [
-          "jsr:@std/assert@^0.226.0"
+          "jsr:@std/assert@1.0.0-rc.2"
         ]
       }
     }
@@ -61,7 +61,7 @@
       "jsr:@std/assert@^1.0.1",
       "jsr:@std/async@^1.0.1",
       "jsr:@std/streams@^1.0.0",
-      "jsr:@std/testing@0.225.0"
+      "jsr:@std/testing@0.225.3"
     ]
   }
 }

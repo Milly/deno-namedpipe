@@ -7,7 +7,7 @@
       "jsr:@nick/dispose@^1.1.0": "jsr:@nick/dispose@1.1.0",
       "jsr:@std/assert@^0.226.0": "jsr:@std/assert@0.226.0",
       "jsr:@std/assert@^1.0.1": "jsr:@std/assert@1.0.1",
-      "jsr:@std/async@0.224.1": "jsr:@std/async@0.224.1",
+      "jsr:@std/async@^1.0.1": "jsr:@std/async@1.0.1",
       "jsr:@std/internal@^1.0.0": "jsr:@std/internal@1.0.1",
       "jsr:@std/internal@^1.0.1": "jsr:@std/internal@1.0.1",
       "jsr:@std/streams": "jsr:@std/streams@1.0.0",
@@ -35,8 +35,8 @@
           "jsr:@std/internal@^1.0.1"
         ]
       },
-      "@std/async@0.224.1": {
-        "integrity": "2fda2c8151cc5811a6ca37fe825f1f71c95e02a374abb6ef868e0e19eca814a5"
+      "@std/async@1.0.1": {
+        "integrity": "3c7f6324a8a1b47ca657e5a349b511c9a6c2c0729e9d66b223c9ecaac0753ecb"
       },
       "@std/internal@1.0.1": {
         "integrity": "6f8c7544d06a11dd256c8d6ba54b11ed870aac6c5aeafff499892662c57673e6"
@@ -59,7 +59,7 @@
       "jsr:@milly/streams@^1.0.0",
       "jsr:@nick/dispose@^1.1.0",
       "jsr:@std/assert@^1.0.1",
-      "jsr:@std/async@0.224.1",
+      "jsr:@std/async@^1.0.1",
       "jsr:@std/streams@0.224.3",
       "jsr:@std/testing@0.225.0"
     ]

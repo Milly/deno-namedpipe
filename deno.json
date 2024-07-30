@@ -8,10 +8,23 @@
     "./server": "./server.ts",
     "./types": "./types.ts"
   },
+  "exclude": [
+    ".coverage"
+  ],
   "publish": {
+    "include": [
+      "**/*.ts",
+      "LICENSE",
+      "README.md"
+    ],
     "exclude": [
-      ".github/",
+      "**/*_test.ts",
       "examples/"
+    ]
+  },
+  "fmt": {
+    "exclude": [
+      "README.md"
     ]
   },
   "unstable": [
@@ -36,13 +49,5 @@
     "@std/async": "jsr:@std/async@^1.0.1",
     "@std/streams": "jsr:@std/streams@^1.0.0",
     "@std/testing": "jsr:@std/testing@0.225.3"
-  },
-  "fmt": {
-    "exclude": [
-      "README.md"
-    ]
-  },
-  "exclude": [
-    ".coverage"
-  ]
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@milly/namedpipe",
-  "version": "1.0.2",
+  "version": "0.0.0",
   "exports": {
     ".": "./mod.ts",
     "./client": "./client.ts",
@@ -8,17 +8,31 @@
     "./server": "./server.ts",
     "./types": "./types.ts"
   },
+  "exclude": [
+    ".coverage"
+  ],
   "publish": {
+    "include": [
+      "**/*.ts",
+      "LICENSE",
+      "README.md"
+    ],
     "exclude": [
-      ".github/",
+      "**/*_test.ts",
       "examples/"
+    ]
+  },
+  "fmt": {
+    "exclude": [
+      "README.md"
     ]
   },
   "unstable": [
     "ffi"
   ],
   "tasks": {
-    "check": "deno lint && deno fmt --check && deno check **/*.ts",
+    "check": "deno lint && deno fmt --check && deno check --no-lock **/*.ts",
+    "check:publish": "deno publish --dry-run",
     "test": "deno test -A --deny-net --deny-env --deny-sys --deny-run",
     "test:doc": "deno task test --doc",
     "test:coverage": "deno task coverage:clear && deno task test:doc --coverage=.coverage",
@@ -36,13 +50,5 @@
     "@std/async": "jsr:@std/async@^1.0.1",
     "@std/streams": "jsr:@std/streams@^1.0.0",
     "@std/testing": "jsr:@std/testing@0.225.3"
-  },
-  "fmt": {
-    "exclude": [
-      "README.md"
-    ]
-  },
-  "exclude": [
-    ".coverage"
-  ]
+  }
 }

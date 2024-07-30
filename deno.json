@@ -31,7 +31,8 @@
     "ffi"
   ],
   "tasks": {
-    "check": "deno lint && deno fmt --check && deno check **/*.ts",
+    "check": "deno lint && deno fmt --check && deno check --no-lock **/*.ts",
+    "check:publish": "deno publish --dry-run",
     "test": "deno test -A --deny-net --deny-env --deny-sys --deny-run",
     "test:doc": "deno task test --doc",
     "test:coverage": "deno task coverage:clear && deno task test:doc --coverage=.coverage",

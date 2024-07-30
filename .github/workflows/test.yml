@@ -18,8 +18,8 @@ jobs:
         runner:
           - windows-latest
         deno-version:
-          - "v1.42"
-          - "v1.x"
+          - "1.42.x"
+          - "1.x"
     runs-on: ${{ matrix.runner }}
     steps:
 
@@ -44,6 +44,9 @@ jobs:
 
       - name: Check
         run: deno task check
+
+      - name: Check slow types
+        run: deno task check:publish
 
       - name: Test
         run: deno task test:coverage

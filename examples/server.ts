@@ -1,5 +1,5 @@
-import { listen } from "jsr:@milly/namedpipe";
-import { TextLineStream } from "jsr:@std/streams/text-line-stream";
+import { listen } from "@milly/namedpipe";
+import { TextLineStream } from "@std/streams/text-line-stream";
 
 const listener = listen({ path: "\\\\.\\pipe\\your-own-name" });
 

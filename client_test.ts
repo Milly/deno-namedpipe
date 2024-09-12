@@ -6,7 +6,7 @@ import {
   assertThrows,
 } from "@std/assert";
 import { assertSpyCalls, spy } from "@std/testing/mock";
-import { promiseState } from "@lambdalisue/async";
+import { promiseState } from "@core/asyncutil";
 import { write } from "@milly/streams/util/write";
 import { DisposableStack } from "@nick/dispose/disposable-stack";
 import { listen } from "./server.ts";

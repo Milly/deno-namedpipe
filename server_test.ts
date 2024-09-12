@@ -7,7 +7,7 @@ import {
 } from "@std/assert";
 import { delay } from "@std/async/delay";
 import { assertSpyCalls, spy } from "@std/testing/mock";
-import { promiseState } from "@lambdalisue/async";
+import { promiseState } from "@core/asyncutil";
 import { DisposableStack } from "@nick/dispose/disposable-stack";
 import type { NamedPipeConn } from "./types.ts";
 import { listen } from "./server.ts";

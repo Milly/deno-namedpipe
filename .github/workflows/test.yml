@@ -12,41 +12,62 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  check:
     strategy:
       matrix:
         runner:
           - windows-latest
-        deno-version:
-          - "1.42.x"
-          - "1.x"
+        deno:
+          - version: "1.x"
+            unsupported_lockfile: true
+          - version: "canary"
     runs-on: ${{ matrix.runner }}
     steps:
 
-      - name: Setup environment
-        if: runner.os == 'Windows'
-        run: |
-          git config --global core.autocrlf false
-          echo "DENO_DIR=$env:LOCALAPPDATA\deno" >> "$env:GITHUB_ENV"
+      - run: git config --global core.autocrlf false
 
       - uses: actions/checkout@v4
 
       - uses: denoland/setup-deno@v1
         with:
-          deno-version: "${{ matrix.deno-version }}"
+          deno-version: "${{ matrix.deno.version }}"
 
-      - uses: actions/cache@v4
-        with:
-          key: deno-${{ runner.os }}-${{ matrix.deno-version }}-${{ hashFiles('test.lock', '.github/workflows/**') }}
-          restore-keys: deno-${{ runner.os }}-${{ matrix.deno-version }}-
-          path: |
-            ${{ env.DENO_DIR }}
+      - name: Remove lock file
+        if: matrix.deno.unsupported_lockfile
+        run: rm deno.lock
 
       - name: Check
         run: deno task check
 
       - name: Check slow types
-        run: deno task check:publish
+        run: deno task check:publish --allow-dirty
+
+  test:
+    needs: check
+    strategy:
+      matrix:
+        runner:
+          - windows-latest
+        deno:
+          - version: "1.42.x"
+            unsupported_lockfile: true
+          - version: "1.x"
+            unsupported_lockfile: true
+          - version: "canary"
+    runs-on: ${{ matrix.runner }}
+    steps:
+
+      - run: git config --global core.autocrlf false
+
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: "${{ matrix.deno.version }}"
+
+      - name: Remove lock file
+        if: matrix.deno.unsupported_lockfile
+        run: rm deno.lock
 
       - name: Test
         run: deno task test:coverage

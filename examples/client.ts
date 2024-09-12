@@ -1,4 +1,4 @@
-import { connect } from "jsr:@milly/namedpipe";
+import { connect } from "@milly/namedpipe";
 
 const conn = await connect({ path: "\\\\.\\pipe\\your-own-name" });
 

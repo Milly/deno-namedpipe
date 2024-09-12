@@ -35,9 +35,8 @@
     "check:publish": "deno publish --dry-run",
     "test": "deno test -A --deny-net --deny-env --deny-sys --deny-run",
     "test:doc": "deno task test --doc",
-    "test:coverage": "deno task coverage:clear && deno task test:doc --coverage=.coverage",
+    "test:coverage": "deno task test:doc --clean --coverage=.coverage",
     "coverage": "deno coverage .coverage",
-    "coverage:clear": "rm -rf .coverage",
     "update": "deno run --allow-env --allow-read --allow-write=. --allow-run=git,deno --allow-net=jsr.io jsr:@molt/cli deno.json",
     "update:commit": "deno task -q update --commit --pre-commit=fmt,lint"
   },

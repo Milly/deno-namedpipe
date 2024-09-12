@@ -2,7 +2,7 @@
   "version": "3",
   "packages": {
     "specifiers": {
-      "jsr:@lambdalisue/async@^2.1.1": "jsr:@lambdalisue/async@2.1.1",
+      "jsr:@core/asyncutil@^1.1.1": "jsr:@core/asyncutil@1.1.1",
       "jsr:@milly/streams@^1.0.0": "jsr:@milly/streams@1.0.4",
       "jsr:@nick/dispose@^1.1.0": "jsr:@nick/dispose@1.1.0",
       "jsr:@std/assert@^1.0.1": "jsr:@std/assert@1.0.4",
@@ -13,8 +13,8 @@
       "jsr:@std/testing@^1.0.2": "jsr:@std/testing@1.0.2"
     },
     "jsr": {
-      "@lambdalisue/async@2.1.1": {
-        "integrity": "1fc9bc6f4ed50215cd2f7217842b18cea80f81c25744f88f8c5eb4be5a1c9ab4"
+      "@core/asyncutil@1.1.1": {
+        "integrity": "64540c79e023605f1c3cee2a50291d4d83d495b89a2b32c99fd3c2fbf445971c"
       },
       "@milly/streams@1.0.4": {
         "integrity": "485b81adee23e220ab6515f7677df9d421a3b84835ea9495cf1351cc0afd9058"
@@ -48,7 +48,7 @@
   "remote": {},
   "workspace": {
     "dependencies": [
-      "jsr:@lambdalisue/async@^2.1.1",
+      "jsr:@core/asyncutil@^1.1.1",
       "jsr:@milly/streams@^1.0.0",
       "jsr:@nick/dispose@^1.1.0",
       "jsr:@std/assert@^1.0.1",

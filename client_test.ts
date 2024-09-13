@@ -6,7 +6,7 @@ import {
   assertThrows,
 } from "@std/assert";
 import { assertSpyCalls, spy } from "@std/testing/mock";
-import { promiseState } from "@core/asyncutil";
+import { flushPromises, peekPromiseState } from "@core/asyncutil";
 import { write } from "@milly/streams/util/write";
 import { DisposableStack } from "@nick/dispose/disposable-stack";
 import { listen } from "./server.ts";
@@ -31,9 +31,10 @@ Deno.test("connect()", async (t) => {
 
     const connPromise = connect({ path: testPath });
 
-    assertEquals(await promiseState(serverConnPromise), "fulfilled");
+    await flushPromises();
+    assertEquals(await peekPromiseState(serverConnPromise), "fulfilled");
     using _serverConn = await serverConnPromise;
-    assertEquals(await promiseState(connPromise), "fulfilled");
+    assertEquals(await peekPromiseState(connPromise), "fulfilled");
 
     await t.step("and returns NamedPipeClientConn", async () => {
       using conn = await connPromise;
@@ -67,9 +68,10 @@ Deno.test("NamedPipeClientConn", async (t) => {
   async function createConn() {
     const serverConnPromise = listener.accept();
     const connPromise = connect({ path: testPath });
-    assertEquals(await promiseState(serverConnPromise), "fulfilled");
+    await flushPromises();
+    assertEquals(await peekPromiseState(serverConnPromise), "fulfilled");
     const serverConn = stack.use(await serverConnPromise);
-    assertEquals(await promiseState(connPromise), "fulfilled");
+    assertEquals(await peekPromiseState(connPromise), "fulfilled");
     const conn = stack.use(await connPromise);
     return { serverConn, conn };
   }
@@ -111,11 +113,13 @@ Deno.test("NamedPipeClientConn", async (t) => {
       const p = new Uint8Array(100);
       const resPromise = conn.read(p);
 
-      assertEquals(await promiseState(resPromise), "pending");
+      await flushPromises();
+      assertEquals(await peekPromiseState(resPromise), "pending");
 
       await serverConn.write(encode("foo bar"));
 
-      assertEquals(await promiseState(resPromise), "fulfilled");
+      await flushPromises();
+      assertEquals(await peekPromiseState(resPromise), "fulfilled");
 
       const n = await resPromise;
 
@@ -203,18 +207,21 @@ Deno.test("NamedPipeClientConn", async (t) => {
       const readablePromise = conn.readable.pipeTo(new WritableStream());
       const writablePromise = t.readable.pipeTo(conn.writable);
 
-      assertEquals(await promiseState(readablePromise), "pending");
-      assertEquals(await promiseState(writablePromise), "pending");
+      await flushPromises();
+      assertEquals(await peekPromiseState(readablePromise), "pending");
+      assertEquals(await peekPromiseState(writablePromise), "pending");
 
       conn.close();
 
-      assertEquals(await promiseState(readablePromise), "rejected");
+      await flushPromises();
+      assertEquals(await peekPromiseState(readablePromise), "rejected");
       await assertRejects(() => readablePromise, Error, "operation canceled");
-      assertEquals(await promiseState(writablePromise), "pending");
+      assertEquals(await peekPromiseState(writablePromise), "pending");
 
       write(t.writable, new Uint8Array([0])).catch(() => {});
 
-      assertEquals(await promiseState(writablePromise), "rejected");
+      await flushPromises();
+      assertEquals(await peekPromiseState(writablePromise), "rejected");
       await assertRejects(() => writablePromise, Error, "resource closed");
     });
   });

@@ -101,35 +101,30 @@ Deno.test("NamedPipeListener", async (t) => {
     const listener = stack.use(listen({ path: testPath, maxInstances: 2 }));
     const conns: NamedPipeConn[] = [];
 
-    await t.step({
-      name: "resolves when client connects",
-      sanitizeResources: false,
-      fn: async (t) => {
-        const connPromise = listener.accept();
+    await t.step("resolves when client connects", async (t) => {
+      const connPromise = listener.accept();
 
-        await flushPromises();
-        assertEquals(await peekPromiseState(connPromise), "pending");
+      await flushPromises();
+      assertEquals(await peekPromiseState(connPromise), "pending");
 
-        stack.adopt(
-          await Deno.open(testPath, { append: true }),
-          (f) => f.close(),
-        );
+      stack.adopt(
+        await Deno.open(testPath, { append: true }),
+        (f) => f.close(),
+      );
 
-        await flushPromises();
-        assertEquals(await peekPromiseState(connPromise), "fulfilled");
+      await flushPromises();
+      assertEquals(await peekPromiseState(connPromise), "fulfilled");
 
-        await t.step("as NamedPipeServerConn", async () => {
-          const actual = stack.use(await connPromise);
+      await t.step("as NamedPipeServerConn", async () => {
+        const actual = stack.use(await connPromise);
 
-          assertEquals(Deno.inspect(actual), "NamedPipeServerConn {}");
-          conns.push(actual);
-        });
-      },
+        assertEquals(Deno.inspect(actual), "NamedPipeServerConn {}");
+        conns.push(actual);
+      });
     });
-    await t.step({
-      name: "resolves when calls no more than `maxInstances` times",
-      sanitizeResources: false,
-      fn: async () => {
+    await t.step(
+      "resolves when calls no more than `maxInstances` times",
+      async () => {
         const connPromise = listener.accept();
 
         await flushPromises();
@@ -144,11 +139,10 @@ Deno.test("NamedPipeListener", async (t) => {
         assertEquals(await peekPromiseState(connPromise), "fulfilled");
         conns.push(stack.use(await connPromise));
       },
-    });
-    await t.step({
-      name: "pendings when calls more than `maxInstances` times",
-      sanitizeResources: false,
-      fn: async (t) => {
+    );
+    await t.step(
+      "pendings when calls more than `maxInstances` times",
+      async (t) => {
         const connPromise = listener.accept();
 
         await flushPromises();
@@ -178,7 +172,7 @@ Deno.test("NamedPipeListener", async (t) => {
           conns.push(stack.use(await connPromise));
         });
       },
-    });
+    );
     await t.step("rejects when `options.signal` aborts", async () => {
       const aborter = new AbortController();
 
@@ -334,13 +328,34 @@ Deno.test("NamedPipeListener", async (t) => {
 
       assertStrictEquals(iterator, listener);
     });
-    await t.step({
-      name: ".next()",
-      sanitizeResources: false,
-      fn: async (t) => {
-        const iterator = listener[Symbol.asyncIterator]();
+    await t.step(".next()", async (t) => {
+      const iterator = listener[Symbol.asyncIterator]();
 
-        await t.step("resolves when client connects", async (t) => {
+      await t.step("resolves when client connects", async (t) => {
+        const resPromise = iterator.next();
+
+        await flushPromises();
+        assertEquals(await peekPromiseState(resPromise), "pending");
+
+        stack.adopt(
+          await Deno.open(testPath, { append: true }),
+          (f) => f.close(),
+        );
+
+        await flushPromises();
+        assertEquals(await peekPromiseState(resPromise), "fulfilled");
+
+        await t.step("as IteratorResult<NamedPipeConn>", async () => {
+          const res = await resPromise;
+
+          assertObjectMatch(res, { done: false });
+          assertEquals(Deno.inspect(res.value), "NamedPipeServerConn {}");
+          conns.push(stack.use(res.value));
+        });
+      });
+      await t.step(
+        "resolves when calls no more than `maxInstances` times",
+        async () => {
           const resPromise = iterator.next();
 
           await flushPromises();
@@ -353,22 +368,33 @@ Deno.test("NamedPipeListener", async (t) => {
 
           await flushPromises();
           assertEquals(await peekPromiseState(resPromise), "fulfilled");
+          const res = await resPromise;
+          assertObjectMatch(res, { done: false });
+          assertEquals(Deno.inspect(res.value), "NamedPipeServerConn {}");
+          conns.push(stack.use(res.value));
+        },
+      );
+      await t.step(
+        "pendings when calls more than `maxInstances` times",
+        async (t) => {
+          const resPromise = iterator.next();
 
-          await t.step("as IteratorResult<NamedPipeConn>", async () => {
-            const res = await resPromise;
+          await flushPromises();
+          assertEquals(await peekPromiseState(resPromise), "pending");
 
-            assertObjectMatch(res, { done: false });
-            assertEquals(Deno.inspect(res.value), "NamedPipeServerConn {}");
-            conns.push(stack.use(res.value));
-          });
-        });
-        await t.step(
-          "resolves when calls no more than `maxInstances` times",
-          async () => {
-            const resPromise = iterator.next();
+          await assertRejects(
+            () => Deno.open(testPath, { append: true }),
+            Error,
+            "(os error 231)", // ERROR_PIPE_BUSY
+          );
 
-            await flushPromises();
-            assertEquals(await peekPromiseState(resPromise), "pending");
+          await flushPromises();
+          assertEquals(await peekPromiseState(resPromise), "pending");
+
+          await t.step("and resolves when previous conn closes", async () => {
+            conns[0].close();
+
+            await resolveMicrotasks();
 
             stack.adopt(
               await Deno.open(testPath, { append: true }),
@@ -380,60 +406,24 @@ Deno.test("NamedPipeListener", async (t) => {
             const res = await resPromise;
             assertObjectMatch(res, { done: false });
             assertEquals(Deno.inspect(res.value), "NamedPipeServerConn {}");
-            conns.push(stack.use(res.value));
-          },
-        );
-        await t.step(
-          "pendings when calls more than `maxInstances` times",
-          async (t) => {
-            const resPromise = iterator.next();
+            stack.use(res.value);
+          });
+        },
+      );
+      await t.step("resolves when listener closes", async () => {
+        const resPromise = iterator.next();
 
-            await flushPromises();
-            assertEquals(await peekPromiseState(resPromise), "pending");
+        await flushPromises();
+        assertEquals(await peekPromiseState(resPromise), "pending");
 
-            await assertRejects(
-              () => Deno.open(testPath, { append: true }),
-              Error,
-              "(os error 231)", // ERROR_PIPE_BUSY
-            );
+        listener.close();
 
-            await flushPromises();
-            assertEquals(await peekPromiseState(resPromise), "pending");
+        await flushPromises();
+        assertEquals(await peekPromiseState(resPromise), "fulfilled");
 
-            await t.step("and resolves when previous conn closes", async () => {
-              conns[0].close();
-
-              await resolveMicrotasks();
-
-              stack.adopt(
-                await Deno.open(testPath, { append: true }),
-                (f) => f.close(),
-              );
-
-              await flushPromises();
-              assertEquals(await peekPromiseState(resPromise), "fulfilled");
-              const res = await resPromise;
-              assertObjectMatch(res, { done: false });
-              assertEquals(Deno.inspect(res.value), "NamedPipeServerConn {}");
-              stack.use(res.value);
-            });
-          },
-        );
-        await t.step("resolves when listener closes", async () => {
-          const resPromise = iterator.next();
-
-          await flushPromises();
-          assertEquals(await peekPromiseState(resPromise), "pending");
-
-          listener.close();
-
-          await flushPromises();
-          assertEquals(await peekPromiseState(resPromise), "fulfilled");
-
-          const res = await resPromise;
-          assertEquals(res, { done: true, value: undefined });
-        });
-      },
+        const res = await resPromise;
+        assertEquals(res, { done: true, value: undefined });
+      });
     });
     await t.step("closes listener when iterator breaks", async () => {
       using stack = new DisposableStack();

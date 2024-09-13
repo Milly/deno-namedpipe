@@ -7,7 +7,7 @@ import {
 } from "@std/assert";
 import { delay } from "@std/async/delay";
 import { assertSpyCalls, spy } from "@std/testing/mock";
-import { promiseState } from "@core/asyncutil";
+import { flushPromises, peekPromiseState } from "@core/asyncutil";
 import { DisposableStack } from "@nick/dispose/disposable-stack";
 import type { NamedPipeConn } from "./types.ts";
 import { listen } from "./server.ts";
@@ -63,7 +63,8 @@ Deno.test("listen()", async (t) => {
       await Deno.open(testPath, { append: true }),
       (f) => f.close(),
     );
-    assertEquals(await promiseState(availableConnPromise), "fulfilled");
+    await flushPromises();
+    assertEquals(await peekPromiseState(availableConnPromise), "fulfilled");
     stack.use(await availableConnPromise);
     availableListener.close();
 
@@ -106,14 +107,16 @@ Deno.test("NamedPipeListener", async (t) => {
       fn: async (t) => {
         const connPromise = listener.accept();
 
-        assertEquals(await promiseState(connPromise), "pending");
+        await flushPromises();
+        assertEquals(await peekPromiseState(connPromise), "pending");
 
         stack.adopt(
           await Deno.open(testPath, { append: true }),
           (f) => f.close(),
         );
 
-        assertEquals(await promiseState(connPromise), "fulfilled");
+        await flushPromises();
+        assertEquals(await peekPromiseState(connPromise), "fulfilled");
 
         await t.step("as NamedPipeServerConn", async () => {
           const actual = stack.use(await connPromise);
@@ -129,14 +132,16 @@ Deno.test("NamedPipeListener", async (t) => {
       fn: async () => {
         const connPromise = listener.accept();
 
-        assertEquals(await promiseState(connPromise), "pending");
+        await flushPromises();
+        assertEquals(await peekPromiseState(connPromise), "pending");
 
         stack.adopt(
           await Deno.open(testPath, { append: true }),
           (f) => f.close(),
         );
 
-        assertEquals(await promiseState(connPromise), "fulfilled");
+        await flushPromises();
+        assertEquals(await peekPromiseState(connPromise), "fulfilled");
         conns.push(stack.use(await connPromise));
       },
     });
@@ -146,7 +151,8 @@ Deno.test("NamedPipeListener", async (t) => {
       fn: async (t) => {
         const connPromise = listener.accept();
 
-        assertEquals(await promiseState(connPromise), "pending");
+        await flushPromises();
+        assertEquals(await peekPromiseState(connPromise), "pending");
 
         await assertRejects(
           () => Deno.open(testPath, { append: true }),
@@ -154,7 +160,8 @@ Deno.test("NamedPipeListener", async (t) => {
           "(os error 231)", // ERROR_PIPE_BUSY
         );
 
-        assertEquals(await promiseState(connPromise), "pending");
+        await flushPromises();
+        assertEquals(await peekPromiseState(connPromise), "pending");
 
         await t.step("and resolves when previous conn closes", async () => {
           conns[0].close();
@@ -166,7 +173,8 @@ Deno.test("NamedPipeListener", async (t) => {
             (f) => f.close(),
           );
 
-          assertEquals(await promiseState(connPromise), "fulfilled");
+          await flushPromises();
+          assertEquals(await peekPromiseState(connPromise), "fulfilled");
           conns.push(stack.use(await connPromise));
         });
       },
@@ -176,11 +184,13 @@ Deno.test("NamedPipeListener", async (t) => {
 
       const connPromise = listener.accept({ signal: aborter.signal });
 
-      assertEquals(await promiseState(connPromise), "pending");
+      await flushPromises();
+      assertEquals(await peekPromiseState(connPromise), "pending");
 
       aborter.abort("abort-by-signal");
 
-      assertEquals(await promiseState(connPromise), "rejected");
+      await flushPromises();
+      assertEquals(await peekPromiseState(connPromise), "rejected");
 
       const reason = await assertRejects(() => connPromise);
       assertEquals(reason, "abort-by-signal");
@@ -192,7 +202,8 @@ Deno.test("NamedPipeListener", async (t) => {
       const connPromise = listener.accept({ signal: aborter.signal });
       connPromise.catch(() => {});
 
-      assertEquals(await promiseState(connPromise), "rejected");
+      await flushPromises();
+      assertEquals(await peekPromiseState(connPromise), "rejected");
 
       const reason = await assertRejects(() => connPromise);
       assertEquals(reason, "abort-by-signal");
@@ -200,11 +211,13 @@ Deno.test("NamedPipeListener", async (t) => {
     await t.step("rejects when listener closes", async () => {
       const connPromise = listener.accept();
 
-      assertEquals(await promiseState(connPromise), "pending");
+      await flushPromises();
+      assertEquals(await peekPromiseState(connPromise), "pending");
 
       listener.close();
 
-      assertEquals(await promiseState(connPromise), "rejected");
+      await flushPromises();
+      assertEquals(await peekPromiseState(connPromise), "rejected");
 
       await assertRejects(() => connPromise, Error, "operation canceled");
     });
@@ -212,7 +225,8 @@ Deno.test("NamedPipeListener", async (t) => {
       const connPromise = listener.accept();
       connPromise.catch(() => {});
 
-      assertEquals(await promiseState(connPromise), "rejected");
+      await flushPromises();
+      assertEquals(await peekPromiseState(connPromise), "rejected");
 
       await assertRejects(() => connPromise, Error, "resource closed");
     });
@@ -238,11 +252,13 @@ Deno.test("NamedPipeListener", async (t) => {
         const connPromise = listener.accept();
         connPromise.catch(() => {});
 
-        assertEquals(await promiseState(connPromise), "pending");
+        await flushPromises();
+        assertEquals(await peekPromiseState(connPromise), "pending");
 
         listener.close();
 
-        assertEquals(await promiseState(connPromise), "rejected");
+        await flushPromises();
+        assertEquals(await peekPromiseState(connPromise), "rejected");
         await assertRejects(
           () => Deno.stat(testPath),
           Error,
@@ -260,15 +276,17 @@ Deno.test("NamedPipeListener", async (t) => {
         ];
         Promise.allSettled(promises);
 
-        assertEquals(await promiseState(promises[0]), "pending");
-        assertEquals(await promiseState(promises[1]), "pending");
-        assertEquals(await promiseState(promises[2]), "pending");
+        await flushPromises();
+        assertEquals(await peekPromiseState(promises[0]), "pending");
+        assertEquals(await peekPromiseState(promises[1]), "pending");
+        assertEquals(await peekPromiseState(promises[2]), "pending");
 
         listener.close();
 
-        assertEquals(await promiseState(promises[0]), "rejected");
-        assertEquals(await promiseState(promises[1]), "rejected");
-        assertEquals(await promiseState(promises[2]), "rejected");
+        await flushPromises();
+        assertEquals(await peekPromiseState(promises[0]), "rejected");
+        assertEquals(await peekPromiseState(promises[1]), "rejected");
+        assertEquals(await peekPromiseState(promises[2]), "rejected");
         await assertRejects(
           () => Deno.stat(testPath),
           Error,
@@ -325,14 +343,16 @@ Deno.test("NamedPipeListener", async (t) => {
         await t.step("resolves when client connects", async (t) => {
           const resPromise = iterator.next();
 
-          assertEquals(await promiseState(resPromise), "pending");
+          await flushPromises();
+          assertEquals(await peekPromiseState(resPromise), "pending");
 
           stack.adopt(
             await Deno.open(testPath, { append: true }),
             (f) => f.close(),
           );
 
-          assertEquals(await promiseState(resPromise), "fulfilled");
+          await flushPromises();
+          assertEquals(await peekPromiseState(resPromise), "fulfilled");
 
           await t.step("as IteratorResult<NamedPipeConn>", async () => {
             const res = await resPromise;
@@ -347,14 +367,16 @@ Deno.test("NamedPipeListener", async (t) => {
           async () => {
             const resPromise = iterator.next();
 
-            assertEquals(await promiseState(resPromise), "pending");
+            await flushPromises();
+            assertEquals(await peekPromiseState(resPromise), "pending");
 
             stack.adopt(
               await Deno.open(testPath, { append: true }),
               (f) => f.close(),
             );
 
-            assertEquals(await promiseState(resPromise), "fulfilled");
+            await flushPromises();
+            assertEquals(await peekPromiseState(resPromise), "fulfilled");
             const res = await resPromise;
             assertObjectMatch(res, { done: false });
             assertEquals(Deno.inspect(res.value), "NamedPipeServerConn {}");
@@ -366,7 +388,8 @@ Deno.test("NamedPipeListener", async (t) => {
           async (t) => {
             const resPromise = iterator.next();
 
-            assertEquals(await promiseState(resPromise), "pending");
+            await flushPromises();
+            assertEquals(await peekPromiseState(resPromise), "pending");
 
             await assertRejects(
               () => Deno.open(testPath, { append: true }),
@@ -374,7 +397,8 @@ Deno.test("NamedPipeListener", async (t) => {
               "(os error 231)", // ERROR_PIPE_BUSY
             );
 
-            assertEquals(await promiseState(resPromise), "pending");
+            await flushPromises();
+            assertEquals(await peekPromiseState(resPromise), "pending");
 
             await t.step("and resolves when previous conn closes", async () => {
               conns[0].close();
@@ -386,7 +410,8 @@ Deno.test("NamedPipeListener", async (t) => {
                 (f) => f.close(),
               );
 
-              assertEquals(await promiseState(resPromise), "fulfilled");
+              await flushPromises();
+              assertEquals(await peekPromiseState(resPromise), "fulfilled");
               const res = await resPromise;
               assertObjectMatch(res, { done: false });
               assertEquals(Deno.inspect(res.value), "NamedPipeServerConn {}");
@@ -397,11 +422,13 @@ Deno.test("NamedPipeListener", async (t) => {
         await t.step("resolves when listener closes", async () => {
           const resPromise = iterator.next();
 
-          assertEquals(await promiseState(resPromise), "pending");
+          await flushPromises();
+          assertEquals(await peekPromiseState(resPromise), "pending");
 
           listener.close();
 
-          assertEquals(await promiseState(resPromise), "fulfilled");
+          await flushPromises();
+          assertEquals(await peekPromiseState(resPromise), "fulfilled");
 
           const res = await resPromise;
           assertEquals(res, { done: true, value: undefined });
@@ -425,7 +452,8 @@ Deno.test("NamedPipeListener", async (t) => {
         (f) => f.close(),
       );
 
-      assertEquals(await promiseState(iteratorPromise), "fulfilled");
+      await flushPromises();
+      assertEquals(await peekPromiseState(iteratorPromise), "fulfilled");
       assertThrows(() => listener.close(), Error, "resource closed");
     });
   });

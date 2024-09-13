@@ -1,7 +1,11 @@
 /** Get `KERNEL32.DLL` library functions. */
 export function getKernel32(): LibKernel32Symbols {
   if (!libKernel32) {
-    throw new TypeError("Kernel32 is not supported");
+    if (Deno.build.os === "windows") {
+      libKernel32 = loadKernel32();
+    } else {
+      throw new TypeError("Kernel32 is not supported");
+    }
   }
   return libKernel32.symbols;
 }
@@ -10,10 +14,6 @@ type LibKernel32 = ReturnType<typeof loadKernel32>;
 type LibKernel32Symbols = LibKernel32["symbols"];
 
 let libKernel32: LibKernel32 | undefined;
-
-if (Deno.build.os === "windows") {
-  libKernel32 = loadKernel32();
-}
 
 function loadKernel32() {
   return Deno.dlopen("KERNEL32.dll", {

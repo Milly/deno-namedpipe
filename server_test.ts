@@ -11,6 +11,10 @@ import { flushPromises, peekPromiseState } from "@core/asyncutil";
 import { DisposableStack } from "@nick/dispose/disposable-stack";
 import type { NamedPipeConn } from "./types.ts";
 import { listen } from "./server.ts";
+import { getKernel32 } from "./kernel32.ts";
+
+// NOTE: preload DLL to prevent resource leaks detected in tests.
+getKernel32();
 
 function createTestPipePath() {
   return `\\\\.\\pipe\\deno-namedpipe-server-test-${performance.now()}`;

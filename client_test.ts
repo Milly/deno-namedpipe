@@ -12,6 +12,10 @@ import { DisposableStack } from "@nick/dispose/disposable-stack";
 import { listen } from "./server.ts";
 import { connect } from "./client.ts";
 import { Win32Error } from "./error.ts";
+import { getKernel32 } from "./kernel32.ts";
+
+// NOTE: preload DLL to prevent resource leaks detected in tests.
+getKernel32();
 
 function createTestPipePath() {
   return `\\\\.\\pipe\\deno-namedpipe-client-test-${performance.now()}`;
